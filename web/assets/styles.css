@@ -1,0 +1,19 @@
+#top {
+  background: lightgray;
+  height: 50px;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#logo {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.review {
+  border: 1px solid black;
+  margin: 20px;
+}
