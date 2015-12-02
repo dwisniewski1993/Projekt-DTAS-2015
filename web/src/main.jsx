@@ -189,7 +189,7 @@ var ReviewForm = React.createClass({
         var review = {
             pid: this.props.productId,
             nick: this.refs.nick.value,
-            rating: this.refs.rating.value,
+            rating: parseInt(this.refs.rating.value),
             comment: this.refs.comment.value
         }
 
