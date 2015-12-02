@@ -56,6 +56,44 @@ def add_product():
 
     return jsonify({'status':'ok'})
 
+@app.route('/api/products/<int:product_id>/')
+def get_product(product_id):
+    with connection.cursor() as cursor:
+        sql = "SELECT * FROM products WHERE id = %s"
+        cursor.execute(sql, (product_id,))
+        product = cursor.fetchone()
+
+        sql = '''SELECT name, value FROM product_attributes pa
+            LEFT JOIN categories_attributes ca
+            ON ca.id = pa.attribute_id
+            WHERE product_id = %s'''
+
+        cursor.execute(sql, (product_id,))            
+        attributes = cursor.fetchall()
+
+        product['attributes'] = attributes
+        
+        return jsonify(product)
+
+
+@app.route('/api/products/<int:product_id>/reviews')
+def get_product_reviews(product_id):
+    with connection.cursor() as cursor:
+        sql = "SELECT * FROM reviews WHERE product_id = %s"
+        cursor.execute(sql, (product_id,))
+
+        return jsonify({'reviews': cursor.fetchall()})
+
+@app.route('/api/reviews/', methods=['POST'])
+def add_review():
+    rev = request.json
+    with connection.cursor() as cursor:
+        sql = "INSERT INTO reviews(product_id, nick, rating, comment) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (rev['pid'], rev['nick'], rev['rating'], rev['comment']))
+    connection.commit()        
+
+    return jsonify({'status':'ok'})
+
 @app.route('/api/categories/<int:category_id>/products')
 def get_category_products(category_id):
     with connection.cursor() as cursor:

@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS product_attributes;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS categories_attributes;
+DROP TABLE IF EXISTS reviews;
 
 CREATE TABLE products (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
@@ -25,6 +26,14 @@ CREATE TABLE categories_attributes (
   `category_id` INT NOT NULL,
   `name` VARCHAR(200) NOT NULL,
   `value_type` ENUM('numeric', 'boolean', 'string')
+);
+
+CREATE TABLE reviews (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `product_id` INT NOT NULL,
+  `nick` VARCHAR(255) NOT NULL,
+  `rating` INT NOT NULL,
+  `comment` TEXT NOT NULL
 );
 
 -------
