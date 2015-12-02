@@ -172,21 +172,9 @@ main {
 
 .rating {
   color: #fff;
+  text-shadow: 1px 1px 2px black;
   padding: 2px 3px;
   border-radius: 2px;
-}
-
-.rating.positive {
-  background: green;
-}
-
-.rating.mixed {
-  color: #333;
-  background: yellow;
-}
-
-.rating.negative {
-  background: red;
 }
 
 .user-review {

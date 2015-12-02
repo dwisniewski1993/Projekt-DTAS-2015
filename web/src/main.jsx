@@ -126,7 +126,23 @@ var Product = (props) => {
 
 };
 
+var ColorsMixin = {
+    ratingToCss: function(rating) {
+        var r,g,b=0;
+        if(rating <= 5) {
+            r=255;
+            g=Math.floor((rating/5)*255);
+        } else {
+            r=Math.floor(((10-rating)/5)*255);
+            g=255;
+        }
+
+        return { background: `rgb(${r},${g},${b})` };   
+    }
+};
+
 var ReviewList = React.createClass({
+    mixins: [ColorsMixin],
     getInitialState: function() {
         return {reviews: []};
     },
@@ -156,7 +172,8 @@ var ReviewList = React.createClass({
             <div className="box reviews">
                 <h2>Opinie</h2>
                 {reviews}
-                Średnia: {avg}<br /><br />
+                Średnia: <span className="rating" style={this.ratingToCss(avg)}>{avg}</span>
+                <br /><br />
                 <ReviewForm productId={this.props.productId}
                     addReview={this.addReview} />
             </div>
@@ -165,25 +182,15 @@ var ReviewList = React.createClass({
 });
 
 var ReviewForm = React.createClass({
+    mixins: [ColorsMixin],
     getInitialState: function() {
-        return {
-            rating: 0,
-            color: "positive"
-        };
+        return {rating: 10};
     },
     componentDidMount: function() {
-        this.updateRating();
+        this.refs.rating.value = 10;
     },
     updateRating: function() {
-        var newRating = this.refs.rating.value;
-
-        var color = "positive";
-        if (newRating <= 3)
-            color = "negative";
-        else if (newRating <= 6)
-            color = "mixed";
-
-        this.setState({rating: newRating, color: color});
+        this.setState( {rating: this.refs.rating.value} );
     },
     addReview: function() {
         var review = {
@@ -192,6 +199,8 @@ var ReviewForm = React.createClass({
             rating: parseInt(this.refs.rating.value),
             comment: this.refs.comment.value
         }
+
+        this.refs.nick.value = this.refs.comment.value = '';
 
         qwest.post('/api/reviews/', review, {dataType:'json'})
             .then((xhr, response) => { this.props.addReview(review); })
@@ -206,7 +215,9 @@ var ReviewForm = React.createClass({
                 </div>
                 <div className="form-row">
                     <span className="name">
-                        Ocena: <span className={`rating ${this.state.color}`}>{this.state.rating}</span>
+                        Ocena: <span className={`rating`}
+                            style={this.ratingToCss(this.state.rating)}>
+                            {this.state.rating}</span>
                     </span>
                     <input className="value" ref="rating" onChange={this.updateRating}
                         type="range" min="1" max="10" step="1" />
