@@ -2,12 +2,30 @@ a {
   outline:none;
 }
 
+table {
+  width: 100%;
+}
+
+td {
+  width: 50%;
+  height: 35px;
+}
+
+tr + tr {
+  border-top: 1px solid #ccc;
+}
+
 input {
   display: block;
 }
 
 body {
   background: #eee;
+  color: #444;
+}
+
+button {
+  padding: 4px 15px;
 }
 
 #top-bar-wrap {
@@ -24,6 +42,7 @@ h1 {
 
 h2 {
   margin: 0 0 20px;
+  color: #464646; 
 }
 
 #top-bar {
@@ -99,8 +118,85 @@ main {
   padding: 30px;
 }
 
+.content-wrap::after {
+  content: "";
+  display: block;
+  clear:both;
+}
+
 .item {
   border: 1px solid #aaa;
   margin: 20px 0;
   padding: 10px;
+}
+
+.box {
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 3%;
+  margin-bottom: 20px;
+  width: 42%;
+}
+
+.box.review {
+  float: right;
+}
+
+.box.attributes {
+  float: left;
+}
+
+.box.reviews {
+  float: right;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.form-row > .name {
+  width: 25%;
+  text-align: right;
+}
+
+.form-row > .value {
+  width: 70%;
+}
+
+.form-row > .submit {
+  float: right;
+}
+
+.rating {
+  color: #fff;
+  padding: 2px 3px;
+  border-radius: 2px;
+}
+
+.rating.positive {
+  background: green;
+}
+
+.rating.mixed {
+  color: #333;
+  background: yellow;
+}
+
+.rating.negative {
+  background: red;
+}
+
+.user-review {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.user-review > p {
+  margin: 0 0 4px;
+  display: block;
 }

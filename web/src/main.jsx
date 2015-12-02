@@ -119,12 +119,110 @@ var Product = (props) => {
 
     return (
         <div className="item">
-            <h2>{props.name}</h2>
+            <h2><Link to={`/produkty/${props.id}`}>{props.name}</Link></h2>
             {attrs}
         </div>
     );
 
 };
+
+var ReviewList = React.createClass({
+    getInitialState: function() {
+        return {reviews: []};
+    },
+    componentDidMount: function() {
+        qwest.get(`/api/products/${this.props.productId}/reviews`)
+            .then((xhr, response) => { this.setState(response); });
+    },
+    addReview: function(review) {
+        var reviews = this.state.reviews.concat([review]);
+        this.setState({reviews:reviews});
+    },
+    render: function() {
+        var reviews = this.state.reviews.map(data =>
+            <div className="user-review">
+                <p>{data.comment}</p>
+                <b>{data.nick}</b>, {data.rating}/10
+            </div>
+        );
+
+        var avg = 0;
+        if (this.state.reviews.length) {
+            var ratings = this.state.reviews.map(data => data.rating);
+            avg = ratings.reduce((prev,curr) => prev+curr) / ratings.length;
+        }
+
+        return (
+            <div className="box reviews">
+                <h2>Opinie</h2>
+                {reviews}
+                Średnia: {avg}<br /><br />
+                <ReviewForm productId={this.props.productId}
+                    addReview={this.addReview} />
+            </div>
+        );
+    }
+});
+
+var ReviewForm = React.createClass({
+    getInitialState: function() {
+        return {
+            rating: 0,
+            color: "positive"
+        };
+    },
+    componentDidMount: function() {
+        this.updateRating();
+    },
+    updateRating: function() {
+        var newRating = this.refs.rating.value;
+
+        var color = "positive";
+        if (newRating <= 3)
+            color = "negative";
+        else if (newRating <= 6)
+            color = "mixed";
+
+        this.setState({rating: newRating, color: color});
+    },
+    addReview: function() {
+        var review = {
+            pid: this.props.productId,
+            nick: this.refs.nick.value,
+            rating: this.refs.rating.value,
+            comment: this.refs.comment.value
+        }
+
+        qwest.post('/api/reviews/', review, {dataType:'json'})
+            .then((xhr, response) => { this.props.addReview(review); })
+    },
+    render: function() {
+        return (
+            <div>
+                <h2>Oceń produkt</h2>
+                <div className="form-row">
+                    <span className="name">Twój nick</span>
+                    <input className="value" ref="nick" type="text" />
+                </div>
+                <div className="form-row">
+                    <span className="name">
+                        Ocena: <span className={`rating ${this.state.color}`}>{this.state.rating}</span>
+                    </span>
+                    <input className="value" ref="rating" onChange={this.updateRating}
+                        type="range" min="1" max="10" step="1" />
+                </div>
+                <div className="form-row">
+                    <span className="name">Komentarz</span>
+                    <textarea className="value" ref="comment" />
+                </div>
+                <div className="form-row">
+                    <span className="name"></span>
+                    <button onClick={this.addReview}>Dodaj opinię</button>
+                </div>                
+            </div>
+        );
+    }
+});
 
 // -----------------------
 
@@ -158,6 +256,37 @@ var ProductList = React.createClass({
                 <h1>Lista produktów</h1>
                 <select ref="kategoria" onChange={this.showProducts}>{categories}</select>
                 {products}
+            </div>
+        );
+    }
+});
+
+var ProductPage = React.createClass({
+    getInitialState: function() {
+        return {
+            name: "",
+            reviews: [],
+            attributes: [],
+            id: this.props.params.productId
+        };
+    },
+    componentDidMount: function() {
+        qwest.get(`/api/products/${this.state.id}`).then((xhr, response) => {
+            this.setState(response);
+        });
+    },
+    render: function() {
+            var attributes = this.state.attributes
+                .map(data => <tr><td><b>{data.name}</b></td><td>{data.value}</td></tr>);
+
+        return (
+            <div className="content-wrap">
+                <h1>{this.state.name}</h1>
+                <div className="box attributes">
+                    <h2>Cechy produktu</h2>
+                    <table><tbody>{attributes}</tbody></table>
+                </div>
+                <ReviewList productId={this.state.id} />
             </div>
         );
     }
@@ -197,6 +326,7 @@ ReactDOM.render((
         <Route path="/" component={App}>
             <Route path="produkty" component={ProductList} />
             <Route path="produkty/dodaj" component={AddProduct} />
+            <Route path="produkty/:productId" component={ProductPage} />
             <Route path="kategorie/dodaj" component={AddCategory} />
         </Route>
     </Router>
