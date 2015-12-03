@@ -165,7 +165,7 @@ var ReviewList = React.createClass({
         var avg = 0;
         if (this.state.reviews.length) {
             var ratings = this.state.reviews.map(data => data.rating);
-            avg = ratings.reduce((prev,curr) => prev+curr) / ratings.length;
+            avg = +(ratings.reduce((prev,curr) => prev+curr) / ratings.length).toFixed(2);
         }
 
         return (
