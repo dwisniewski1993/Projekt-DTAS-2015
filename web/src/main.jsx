@@ -219,7 +219,7 @@ var ReviewForm = React.createClass({
                             style={this.ratingToCss(this.state.rating)}>
                             {this.state.rating}</span>
                     </span>
-                    <input className="value" ref="rating" onChange={this.updateRating}
+                    <input className="value" ref="rating" onInput={this.updateRating}
                         type="range" min="1" max="10" step="1" />
                 </div>
                 <div className="form-row">
