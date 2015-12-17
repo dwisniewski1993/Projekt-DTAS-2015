@@ -95,15 +95,18 @@ var ProductForm = React.createClass({
         );
 
         var fields = this.state.attributes.map(
-            attr => <input ref={attr.id} placeholder={attr.name} />
+            attr => <tr><td>{attr.name}</td><td><input ref={attr.id} /></td></tr>
         );
 
         return (
-            <div>
-                <h1>Dodaj produkt</h1>
-                <select ref="kategoria" onChange={this.showFields}>{categories}</select>
-                <input ref="nazwa" placeholder="Nazwa produktu" />
-                {fields}
+            <div className="box box-60">
+                <table>
+                    <tbody>
+                        <tr><td><b>Kategoria</b></td><td><select ref="kategoria" onChange={this.showFields}>{categories}</select></td></tr>
+                        <tr><td><b>Nazwa produktu</b></td><td><input ref="nazwa" /></td></tr>
+                        {fields}
+                    </tbody>
+                </table>
                 <br /><button onClick={this.addProduct}>Dodaj produkt</button>
             </div>
         );
@@ -307,6 +310,7 @@ var AddProduct = React.createClass({
     render: function() {
         return (
             <div className="content-wrap">
+                <h1>Dodaj produkt</h1>
                 <ProductForm />
             </div>
         );

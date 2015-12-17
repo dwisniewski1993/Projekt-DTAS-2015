@@ -138,6 +138,10 @@ main {
   width: 42%;
 }
 
+.box-60 {
+  width: 60%
+}
+
 .box.review {
   float: right;
 }
