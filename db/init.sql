@@ -25,7 +25,7 @@ CREATE TABLE products (
   `name` VARCHAR(100) NOT NULL,
   `category_id` INT NOT NULL,
   `maker` VARCHAR(30) NOT NULL REFERENCES users(id),  
-  `value_type`  VARCHAR(7) CHECK (value_type in ('service', 'grade')),
+  `value_type`  VARCHAR(7) CHECK (value_type in ('service', 'product')),
   `short_description` VARCHAR(150),                                                                    
   `long_description` text                                                                               
 );
