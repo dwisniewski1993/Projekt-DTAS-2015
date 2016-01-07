@@ -9,7 +9,7 @@ CREATE TABLE users (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `nick` VARCHAR(200) NOT NULL UNIQUE,  
   `mail` VARCHAR(100) NOT NULL UNIQUE,  
-  `grade` INT NULL,                                              
+  `grade` INT NULL CHECK (grade <= 100),                                              
   `how_many` INT NULL                                             
 );
 -- wszystkie CONSTRAINT wyrzucam na zewnatrz, 
@@ -17,6 +17,7 @@ CREATE TABLE users (
 -- uzytkownicy dodaja produkty (i usugi)
 -- CONSTRAINT ck_users_nick 
 -- CONSTRAINT ck_users_mail
+-- CONSTRAINT ck_users_grade 
 -- grade - ocena jakosci produktow(uslug) uzytkownika
 -- how-many ilosc produktow(uslug) uzytkownika
  
@@ -24,15 +25,19 @@ CREATE TABLE products (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `category_id` INT NOT NULL,
-  `maker` VARCHAR(30) NOT NULL REFERENCES users(id),  
+  `maker` VARCHAR(30) NOT NULL REFERENCES users(id),
+  `trust` INT CHECK (trust <= 100),
+  `comment` INT NULL,
   `value_type`  VARCHAR(7) CHECK (value_type in ('service', 'product')),
   `short_description` VARCHAR(150),                                                                    
-  `long_description` text                                                                               
+  `long_description` text                                                                             
 );
 --CONSTRAINT ck_product_maker   jaki uzytkownik to wystawia
 --CONSTRAINT ck_product_value_type   jest to serwis, czy usluga
--- short - krotki opis np w wyszukiwarce
+-- short - krotki opis np w liscie z wyniku wyszukiwania
 -- long - dlugi opis na stronie produktu
+-- trust - srednia ocena produktu wyliczana z glownych ocen komentarzy
+-- comment - iloć komentarzy
   
   
 CREATE TABLE product_attributes (
@@ -58,10 +63,20 @@ CREATE TABLE reviews (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `product_id` INT NOT NULL  REFERENCES products(id), 
   `nick` VARCHAR(255) NOT NULL,
-  `rating` INT NOT NULL,
+  `rating` INT NOT NULL CHECK (trust <= 100),
+    `price` INT NOT NULL CHECK (price <= 100),
+    `use_fast` INT NOT NULL CHECK (use_fast <= 100),
+    `material_nice` INT NOT NULL CHECK (material_nice <= 100),
+  `head` VARCHAR(100) NULL,
   `comment` TEXT NOT NULL
 );
 --CONSTRAINT ck_reviews_product_id
+-- rating - ocena srednia wyliczana z trzech ponizszych
+  -- price - czy cena jest adekwatna
+  -- use - czy produkt używa sie sprawnie, wygodnie / fast - czy usuga bya wykonana szybko i sprawnie
+  -- material - czy produkt jest z porzdnego tworzywa  / nice -- czy pan i pani od usugo byli mili
+-- head - naglowek komentarza na stronie w liscie widoczne naglowki i ocena rating, reszta po rozwinieciu
+-- comment - wlasciwy komentarz
 -------
 
 DROP PROCEDURE IF EXISTS category;
