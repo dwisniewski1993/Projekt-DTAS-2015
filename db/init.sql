@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS categories_attributes;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS users; 
+DROP TABLE IF EXISTS comments; 
 
 CREATE TABLE users (                                             
   `id` INT PRIMARY KEY AUTO_INCREMENT,
