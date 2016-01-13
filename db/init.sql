@@ -48,7 +48,8 @@ CREATE TABLE products (
   `comment` INT NULL,
   `value_type`  VARCHAR(7) CHECK (value_type in ('service', 'product')),
   `short_description` VARCHAR(150),                                                                    
-  `long_description` text                                                                             
+  `long_description` text,
+  `price` DOUBLE
 );
 --CONSTRAINT ck_product_maker   jaki uzytkownik to wystawia
 --CONSTRAINT ck_product_value_type   jest to serwis, czy usluga
@@ -56,6 +57,7 @@ CREATE TABLE products (
 -- long - dlugi opis na stronie produktu
 -- trust - srednia ocena produktu wyliczana z glownych ocen komentarzy
 -- comment - iloć komentarzy
+-- price - cena produktu/usugi
   
   
 CREATE TABLE product_attributes (
