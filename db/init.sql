@@ -10,7 +10,8 @@ CREATE TABLE users (
   `nick` VARCHAR(200) NOT NULL UNIQUE,  
   `mail` VARCHAR(100) NOT NULL UNIQUE,  
   `grade` INT NULL CHECK (grade <= 100),                                              
-  `how_many` INT NULL                                             
+  `how_many_products` INT NULL, 
+  `how_many_comments` INT NULL
 );
 -- wszystkie CONSTRAINT wyrzucam na zewnatrz, 
 -- bo w phpMyAdmin nie chce mi si z nimi nic wykonać a nie wiem jak to jest w twojej bazie
@@ -19,7 +20,23 @@ CREATE TABLE users (
 -- CONSTRAINT ck_users_mail
 -- CONSTRAINT ck_users_grade 
 -- grade - ocena jakosci produktow(uslug) uzytkownika
--- how-many ilosc produktow(uslug) uzytkownika
+-- how-many_products ilosc produktow(uslug) uzytkownika
+
+CREATE TABLE comments(
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `commentator` VARCHAR(200),
+  `judged` VARCHAR(200) REFERENCES users(id),
+  `head` VARCHAR(100) NULL,
+  `comment` TEXT NOT NULL,
+  `grade` INT NOT NULL CHECK (grade <= 100)
+)
+ -- id numer komentarza
+ --commentator - osoba która dodaje komentarz
+ -- judgeg - użytkownik któemu jest przyznana ocena
+ -- head - naguwek komentarza
+ -- comment - treć komentarza, wyjanienie oceny
+ -- grade - przyznana ocena
+ 
  
 CREATE TABLE products (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
@@ -63,7 +80,7 @@ CREATE TABLE reviews (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `product_id` INT NOT NULL  REFERENCES products(id), 
   `nick` VARCHAR(255) NOT NULL,
-  `rating` INT NOT NULL CHECK (trust <= 100),
+  `rating` INT NOT NULL CHECK (rating <= 100),
     `price` INT NOT NULL CHECK (price <= 100),
     `use_fast` INT NOT NULL CHECK (use_fast <= 100),
     `material_nice` INT NOT NULL CHECK (material_nice <= 100),
