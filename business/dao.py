@@ -112,3 +112,58 @@ class ReviewRepository(Repository):
         self.connection.commit()
 
         return '', 201 # Created
+
+# --------------
+
+class UserRepository(Repository):
+    def get(self, username):
+        with self.connection.cursor() as cursor:
+            sql = "SELECT `id`,`nick`,`mail` FROM users WHERE nick = %s"
+            cursor.execute(sql, (username,))
+
+            return jsonify(cursor.fetchone())
+
+    def get_all(self):
+        with self.connection.cursor() as cursor:
+            sql = "SELECT `id`,`nick`,`mail` FROM users"
+            cursor.execute(sql)
+
+            return jsonify({'users': cursor.fetchall()})
+
+    def get_reviews(self, username):
+        with self.connection.cursor() as cursor:
+            sql = '''SELECT p.id, name,comment,rating FROM reviews r 
+            JOIN products p ON r.product_id = p.id
+            WHERE nick = %s'''
+            cursor.execute(sql, (username,))
+
+            return jsonify({'reviews':cursor.fetchall()})
+
+    def check_name_availability(self, data):
+        with self.connection.cursor() as cursor:
+            sql = "SELECT * FROM users WHERE nick = %s"
+            if cursor.execute(sql, (data['username'],)):
+                return False
+            return True
+
+    def check_email_availability(self, data):
+        with self.connection.cursor() as cursor:
+            sql = "SELECT * FROM users WHERE mail = %s"
+            if cursor.execute(sql, (data['email'],)):
+                return False
+            return True
+
+    def auth(self, username, password):
+        with self.connection.cursor() as cursor:
+            sql = "SELECT * FROM users WHERE `nick` = %s AND `password` = MD5(%s)"
+            if cursor.execute(sql, (username,password)):
+                return True
+            return False
+
+    def add(self, user):
+        with self.connection.cursor() as cursor:
+            sql = "INSERT INTO users(`nick`, `mail`, `password`) VALUES (%s, %s, MD5(%s))"
+            cursor.execute(sql, (user['username'], user['email'], user['password']))
+        self.connection.commit()
+
+        return '', 201 # Created

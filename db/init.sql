@@ -10,9 +10,7 @@ CREATE TABLE users (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `nick` VARCHAR(200) NOT NULL UNIQUE,  
   `mail` VARCHAR(100) NOT NULL UNIQUE,  
-  `grade` INT NULL CHECK (grade <= 100),                                              
-  `how_many_products` INT NULL, 
-  `how_many_comments` INT NULL
+  `password` VARCHAR(100) NOT NULL
 );
 -- wszystkie CONSTRAINT wyrzucam na zewnatrz, 
 -- bo w phpMyAdmin nie chce mi si z nimi nic wykonać a nie wiem jak to jest w twojej bazie
@@ -20,24 +18,6 @@ CREATE TABLE users (
 -- CONSTRAINT ck_users_nick 
 -- CONSTRAINT ck_users_mail
 -- CONSTRAINT ck_users_grade 
--- grade - ocena jakosci produktow(uslug) uzytkownika
--- how-many_products ilosc produktow(uslug) uzytkownika
-
-CREATE TABLE comments(
-  `id` INT PRIMARY KEY AUTO_INCREMENT,
-  `commentator` VARCHAR(200),
-  `judged` VARCHAR(200) REFERENCES users(id),
-  `head` VARCHAR(100) NULL,
-  `comment` TEXT NOT NULL,
-  `grade` INT NOT NULL CHECK (grade <= 100)
-)
- -- id numer komentarza
- --commentator - osoba która dodaje komentarz
- -- judgeg - użytkownik któemu jest przyznana ocena
- -- head - naguwek komentarza
- -- comment - treć komentarza, wyjanienie oceny
- -- grade - przyznana ocena
- 
  
 CREATE TABLE products (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
