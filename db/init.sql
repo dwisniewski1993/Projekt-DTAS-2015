@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS categories_attributes;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS users; 
-DROP TABLE IF EXISTS comments; 
 
 CREATE TABLE users (                                             
   `id` INT PRIMARY KEY AUTO_INCREMENT,
@@ -22,14 +21,7 @@ CREATE TABLE users (
 CREATE TABLE products (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
-  `category_id` INT NOT NULL,
-  `maker` VARCHAR(30) NOT NULL REFERENCES users(id),
-  `trust` INT CHECK (trust <= 100),
-  `comment` INT NULL,
-  `value_type`  VARCHAR(7) CHECK (value_type in ('service', 'product')),
-  `short_description` VARCHAR(150),                                                                    
-  `long_description` text,
-  `price` DOUBLE
+  `category_id` INT NOT NULL REFERENCES categories(id)
 );
 --CONSTRAINT ck_product_maker   jaki uzytkownik to wystawia
 --CONSTRAINT ck_product_value_type   jest to serwis, czy usluga
@@ -42,7 +34,7 @@ CREATE TABLE products (
   
 CREATE TABLE product_attributes (
   `product_id` INT NOT NULL REFERENCES products(id),
-    `attribute_id` INT NOT NULL,
+  `attribute_id` INT NOT NULL REFERENCES categories_attributes(id),
   `value` VARCHAR(100) NOT NULL
 );
    
@@ -63,11 +55,7 @@ CREATE TABLE reviews (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `product_id` INT NOT NULL  REFERENCES products(id), 
   `nick` VARCHAR(255) NOT NULL,
-  `rating` INT NOT NULL CHECK (rating <= 100),
-    `price` INT NOT NULL CHECK (price <= 100),
-    `use_fast` INT NOT NULL CHECK (use_fast <= 100),
-    `material_nice` INT NOT NULL CHECK (material_nice <= 100),
-  `head` VARCHAR(100) NULL,
+  `rating` INT NOT NULL,
   `comment` TEXT NOT NULL
 );
 --CONSTRAINT ck_reviews_product_id

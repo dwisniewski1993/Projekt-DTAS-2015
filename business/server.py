@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, session, redirect
+from functools import wraps
 import dao
 import pymysql
 
@@ -12,12 +13,24 @@ users = dao.UserRepository(connection)
 
 # ------------
 
-@app.route('/api/categories/', methods=['GET', 'POST'])
+def login_required(fn):
+    @wraps(fn)
+    def inner(*args, **kwargs):
+        if session.get('username'):
+            return fn(*args, **kwargs)
+        return jsonify({'error': 'Wymagana autentykacja'}), 401
+    return inner
+
+# ------------
+
+@app.route('/api/categories/', methods=['GET'])
 def get_categories():
-    if request.method == 'GET':
-        return categories.get_all()
-    elif request.method == 'POST':
-        return categories.add(request.json)
+    return categories.get_all()
+
+@app.route('/api/categories/', methods=['POST'])
+@login_required
+def add_category():
+    return categories.add(request.json)
 
 @app.route('/api/categories/<int:category_id>/attributes')
 def categories_attributes(category_id):
@@ -30,6 +43,7 @@ def get_category_products(category_id):
 # ------------
 
 @app.route('/api/products/', methods=['POST'])
+@login_required
 def add_product():
     return products.add(request.json)
 
@@ -44,6 +58,7 @@ def get_product_reviews(product_id):
     return reviews.get(product_id)
 
 @app.route('/api/reviews/', methods=['POST'])
+@login_required
 def add_review():
     return reviews.add(request.json)
 
@@ -56,13 +71,13 @@ def get_add_users():
     elif request.method == 'POST':
         return users.add(request.json)
 
-@app.route('/api/users/<username>')
-def get_user(username):
-    return users.get(username)
+@app.route('/api/users/<user_id>')
+def get_user(user_id):
+    return users.get(user_id)
 
-@app.route('/api/users/<username>/reviews')
-def get_user_reviews(username):
-    return users.get_reviews(username)
+@app.route('/api/users/<user_id>/reviews')
+def get_user_reviews(user_id):
+    return users.get_reviews(user_id)
 
 @app.route('/api/availability/name', methods=['POST'])
 def check_username():

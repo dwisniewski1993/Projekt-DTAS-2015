@@ -1,0 +1,22 @@
+{
+    "name": "TAS-frontend",
+    "version": "0.1.0",
+    "dependencies": {
+        "react": "0.14.x",
+        "react-dom": "0.14.x",
+        "history": "1.17.0",
+        "react-router": "1.0.3",
+        "qwest": "~3.0.0"
+    },
+    "devDependencies": {
+        "gulp": "*",
+        "gulp-uglify": "*",
+        "babel-preset-react": "*",
+        "babel-preset-es2015": "*",
+        "vinyl-source-stream": "*",
+        "vinyl-buffer": "*",
+        "babelify": "*",
+        "del": "*",
+        "browserify": "*"
+    }
+}

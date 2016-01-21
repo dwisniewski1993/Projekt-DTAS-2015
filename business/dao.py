@@ -116,10 +116,10 @@ class ReviewRepository(Repository):
 # --------------
 
 class UserRepository(Repository):
-    def get(self, username):
+    def get(self, user_id):
         with self.connection.cursor() as cursor:
-            sql = "SELECT `id`,`nick`,`mail` FROM users WHERE nick = %s"
-            cursor.execute(sql, (username,))
+            sql = "SELECT `id`,`nick`,`mail` FROM users WHERE id = %s"
+            cursor.execute(sql, (user_id,))
 
             return jsonify(cursor.fetchone())
 
@@ -130,12 +130,13 @@ class UserRepository(Repository):
 
             return jsonify({'users': cursor.fetchall()})
 
-    def get_reviews(self, username):
+    def get_reviews(self, user_id):
         with self.connection.cursor() as cursor:
             sql = '''SELECT p.id, name,comment,rating FROM reviews r 
             JOIN products p ON r.product_id = p.id
-            WHERE nick = %s'''
-            cursor.execute(sql, (username,))
+            JOIN users u ON r.nick = u.nick
+            WHERE u.id = %s'''
+            cursor.execute(sql, (user_id,))
 
             return jsonify({'reviews':cursor.fetchall()})
 
