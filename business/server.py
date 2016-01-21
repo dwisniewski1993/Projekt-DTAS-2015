@@ -97,7 +97,7 @@ def login():
         session['username'] = request.json['username']
         return '', 200
     else:
-        return '', 404
+        return '', 401
 
 @app.route('/logout')
 def logout():

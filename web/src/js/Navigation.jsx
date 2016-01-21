@@ -24,13 +24,8 @@ var UserMenu = React.createClass({
         };
 
         qwest.post('/login', credentals, {dataType:'json'})
-            .complete((xhr, response) => {
-                if (xhr.status == 404) {
-                    this.setState({badData:true});
-                } else {
-                    window.location = '/produkty';
-                }
-            });
+            .then((xhr,response) => {window.location = '/produkty'; })
+            .catch((e, xhr, response) => { this.setState({badData:true}); })
     },
     render: function() {
         var info = <span className="error">Złe hasło lub nazwa użytkownika</span>;
